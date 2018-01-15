@@ -65,13 +65,16 @@ class ReturnJson(APIView):
         width = 640
         imgurl = request.GET.get('imgurl', '') + '?imageView2/3/w/%s/' % (width)
         question, answers = find_q_and_a(imgurl, width)
-        print 'question:', question
         print 'answers', answers
-        print datetime.now()
-        text = baidu(question)
-
+        # print datetime.now()
+        content1 = baidu(question)
+        content2 = sogou(question)
+        content = content1 + content2
+        text = format(content=content)
         # print datetime.now()
         results = []
+        print '============================================='
+        print 'question:', question
         print '---------------------------------------------'
         for a in answers:
             dict = {}
@@ -79,7 +82,7 @@ class ReturnJson(APIView):
             dict['count'] = text.count(a)
             print a,'    ',dict['count']
             results.append(dict)
-        print '---------------------------------------------'
+        print '============================================='
         # print datetime.now()
         return JsonResponse(results)
 
@@ -122,6 +125,24 @@ def baidu(question):
         return None
 
     content = response.read()
+    return content
+
+
+def sogou(question):
+    url = 'https://www.sogou.com/web?query=%s' % (urllib.quote(question.strip().decode(sys.stdin.encoding).encode('gbk')))
+    opener = urllib2.build_opener(urllib2.ProxyHandler({}))
+    opener.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64)")]
+    urllib2.install_opener(opener)
+    request = urllib2.Request(url)
+    response = urllib2.urlopen(request, timeout=5)
+    if response.getcode() != 200:
+        return None
+
+    content = response.read()
+    return content
+
+
+def format(content):
     dr = re.compile(r'<[^>]+>', re.S)
     cop = re.compile("[^\u4e00-\u9fa50-9]")
     dd = dr.sub('', content)
