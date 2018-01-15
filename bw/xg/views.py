@@ -97,11 +97,11 @@ def find_q_and_a(img_url, img_width):
         if location:
             top = location.get('top', 0)
             left = location.get('left', 0)
-            if top < 150/640*img_width:
+            if top < 150*img_width/640:
                 continue
-            elif top < 300/640*img_width:
+            elif top < 300*img_width/640:
                 question += w['words']
-            elif top < 700/640*img_width and left < 150/640*img_width:
+            elif top < 700*img_width/640 and left < 150*img_width/640:
                 a = w['words']
                 if a.startswith('A') or a.startswith('B') or a.startswith('C'):
                     a = a[2:]
