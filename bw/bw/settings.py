@@ -25,7 +25,7 @@ SECRET_KEY = 'bmzry^9g5gu^ww=kca%k$wb1@u9c!k03mte&*%9v*=-ae=7%%&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cms.juliye.com']
 
 
 # Application definition
