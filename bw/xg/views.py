@@ -61,7 +61,7 @@ JsonError = json_error
 
 class ReturnJson(APIView):
     def get(self, request, *args, **kwargs):
-        print datetime.now()
+        # print datetime.now()
         width = 640
         imgurl = request.GET.get('imgurl', '') + '?imageView2/3/w/%s/' % (width)
         question, answers = find_q_and_a(imgurl, width)
@@ -70,15 +70,17 @@ class ReturnJson(APIView):
         print datetime.now()
         text = baidu(question)
 
-        print datetime.now()
+        # print datetime.now()
         results = []
+        print '---------------------------------------------'
         for a in answers:
             dict = {}
             dict['answer'] = a
             dict['count'] = text.count(a)
+            print a,'    ',dict['count']
             results.append(dict)
-
-        print datetime.now()
+        print '---------------------------------------------'
+        # print datetime.now()
         return JsonResponse(results)
 
 
