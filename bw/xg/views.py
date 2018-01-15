@@ -86,10 +86,10 @@ def find_q_and_a(img_url, img_width):
     client = AipOcr(BAIDU_OCR_APP_ID, BAIDU_OCR_API_KEY, BAIDU_OCR_SECRET_KEY)
     # result = client.general(f_b)
     result = client.generalUrl(img_url)
-
+    if result.get('error_code', None):
+        result = client.generalUrl(img_url)
     print result
     words = result['words_result']
-    print words
     question = ''
     answers = []
     for w in words:
