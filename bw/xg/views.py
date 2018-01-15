@@ -62,8 +62,9 @@ JsonError = json_error
 class ReturnJson(APIView):
     def get(self, request, *args, **kwargs):
         print datetime.now()
-        imgurl = request.GET.get('imgurl', '')
-        question, answers = find_q_and_a(imgurl)
+        width = 640
+        imgurl = request.GET.get('imgurl', '') + '?imageView2/3/w/%s/' % (width)
+        question, answers = find_q_and_a(imgurl, width)
         print 'question:', question
         print 'answers', answers
         print datetime.now()
@@ -81,7 +82,7 @@ class ReturnJson(APIView):
         return JsonResponse(results)
 
 
-def find_q_and_a(img_url):
+def find_q_and_a(img_url, img_width):
     client = AipOcr(BAIDU_OCR_APP_ID, BAIDU_OCR_API_KEY, BAIDU_OCR_SECRET_KEY)
     # result = client.general(f_b)
     result = client.generalUrl(img_url)
@@ -96,11 +97,11 @@ def find_q_and_a(img_url):
         if location:
             top = location.get('top', 0)
             left = location.get('left', 0)
-            if top < 100:
+            if top < 150/640*img_width:
                 continue
-            elif top < 150:
+            elif top < 300/640*img_width:
                 question += w['words']
-            elif top < 400 and left < 200:
+            elif top < 700/640*img_width and left < 150/640*img_width:
                 a = w['words']
                 if a.startswith('A') or a.startswith('B') or a.startswith('C'):
                     a = a[2:]
@@ -124,5 +125,3 @@ def baidu(question):
     dd = dr.sub('', content)
     text = cop.sub('', dd)
     return text
-
-
